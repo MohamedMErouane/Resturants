@@ -1,10 +1,11 @@
 package com.example.problem
 
+import DBHelper
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -15,40 +16,36 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.Visibility
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.problem.ui.theme.ProblemTheme
-import androidx.compose.material.icons.*
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 
 /*
 import androidx.compose.material.icons.filled.Visibility
@@ -132,6 +129,17 @@ fun Login(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var textfield by remember { mutableStateOf("Login") }
     var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val dbHelper = remember { DBHelper(context) }
+    val username1 = "Mohamed"
+    val password2 = "2004"
+    val inserted = dbHelper.InsertData(username1, password2)
+    if (inserted) {
+        println("Username and password inserted successfully.")
+    } else {
+        println("Failed to insert username and password.")
+    }
+
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -201,11 +209,16 @@ fun Login(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (validate(username = username, password = password)) {
-                        textfield = "Hello $username"
-                        navController.navigate("second")
+
+                    if (username.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(context, "Please enter all info", Toast.LENGTH_SHORT).show()
                     } else {
-                        textfield = "Username or password incorrect"
+                        val result = dbHelper.CheckUserNamePassword(username, password)
+                        if (result) {
+                            textfield = "Login successfully"
+                            navController.navigate("second")
+                        } else {
+                            Toast.makeText(context, "Username or password incorrect", Toast.LENGTH_SHORT).show()                        }
                     }
                 },
                 modifier = Modifier
@@ -224,13 +237,13 @@ fun Login(navController: NavController) {
         )
     }
 }
-
+/*
 fun validate(username: String, password: String): Boolean {
     val originusername = "Mohamed"
     val originpassword = "2004"
 
     return username == originusername && password == originpassword
-}
+}*/
 data class Category(val name: String, val imageId: Int, val price: Double)
 
 val categories = listOf(
