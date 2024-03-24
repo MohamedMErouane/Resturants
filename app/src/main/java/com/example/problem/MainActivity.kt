@@ -278,7 +278,7 @@ fun CategoryItem(category: Category, navController: NavController) {
             Button(onClick = {
                 navController.navigate("category/${category.name}")
             }, modifier = Modifier.padding(top = 8.dp)) {
-                Text(text = "Buy")
+                Text(text = "+")
             }
         }
     }
@@ -359,7 +359,8 @@ fun ProfileScreen(navController: NavController, mainActivity: MainActivity) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Text("Profile Page")
+            Spacer(modifier = Modifier.height(100.dp))
+            Text("Panier Page")
             Spacer(modifier = Modifier.height(16.dp))
             Text("Items in Cart:")
             mainActivity.getCartItems().forEach { cartItem ->
@@ -370,7 +371,7 @@ fun ProfileScreen(navController: NavController, mainActivity: MainActivity) {
                 onClick = { sendEmail(mainActivity, mainActivity.getCartItems()) },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Send Email")
+                Text("Buy")
             }
         }
     }
